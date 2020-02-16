@@ -1,26 +1,68 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react'
+import Button from 'react-bootstrap/Button'
+// import ReactDOM from 'react-dom'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { items: [], text: '' };
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  render() {
+    return (
+      <div>
+        <h3>TODO</h3>
+        <TodoList items={this.state.items} />
+        <form onSubmit={this.handleSubmit}>
+          <label htmlFor="new-todo">
+            <span><strong>Apa yang anda pikirkan?</strong></span><br></br>
+          </label>
+          <input
+            id="new-todo"
+            onChange={this.handleChange}
+            value={this.state.text}
+          />
+          <button>
+            List to #{this.state.items.length + 1}
+          </button>
+          <Button variant="secondary">Button</Button>
+        </form>
+      </div>
+    );
+  }
+
+  handleChange(e) {
+    this.setState({ text: e.target.value });
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+    if (!this.state.text.length) {
+      return;
+    }
+    const newItem = {
+      text: this.state.text,
+      id: Date.now()
+    };
+    this.setState(state => ({
+      items: state.items.concat(newItem),
+      text: ''
+    }));
+  }
 }
 
-export default App;
+class TodoList extends Component {
+  render() {
+    return (
+      <ol>
+        {this.props.items.map(item => (
+          <li key={item.id}>{item.text}</li>
+        ))}
+      </ol>
+    );
+  }
+}
+
+export default App
